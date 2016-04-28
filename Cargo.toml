@@ -1,0 +1,14 @@
+[package]
+name = "how-do-i-escape"
+version = "0.1.0"
+license = "MIT"
+description = "Prints escape sequences for unicode graphemes"
+authors = ["Philip Jackson <p-jackson@live.com>"]
+homepage = "https://github.com/p-jackson/how-do-i-escape"
+repository = "https://github.com/p-jackson/how-do-i-escape"
+readme = "README.md"
+keywords = ["escape", "escaping", "unicode", "grapheme", "character"]
+
+[dependencies]
+docopt = "0.6.80"
+rustc-serialize = "0.3.19"
