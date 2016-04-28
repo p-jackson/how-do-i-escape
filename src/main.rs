@@ -31,19 +31,25 @@ fn main() {
     .and_then(|d| d.help(true).version(Some("v0.1.0".to_string())).decode())
     .unwrap_or_else(|e| e.exit());
 
-  println!("css  = {}", as_css(&args.arg_grapheme));
-  println!("html = {}", as_html(&args.arg_grapheme));
-  println!("js   = {}", as_js(&args.arg_grapheme));
+  let as_int = to_int(args.arg_grapheme);
+
+  println!("css  = {}", as_css(as_int));
+  println!("html = {}", as_html(as_int));
+  println!("js   = {}", as_js(as_int));
 }
 
-fn as_css(_: &str) -> String {
-  "\"\\00A7\"".to_owned()
+fn to_int(grapheme: String) -> u32 {
+  grapheme.chars().next().unwrap() as u32
 }
 
-fn as_html(_: &str) -> String {
-  "&sect;".to_owned()
+fn as_css(i: u32) -> String {
+  format!("\"\\{:01$X}\"", i, 4)
 }
 
-fn as_js(_: &str) -> String {
-  "\"\\u00A7\"".to_owned()
+fn as_html(i: u32) -> String {
+  format!("&#x{:01$X};", i, 4)
+}
+
+fn as_js(i: u32) -> String {
+  format!("\"\\u{:01$X}\"", i, 4)
 }
