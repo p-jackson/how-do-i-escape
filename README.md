@@ -1,4 +1,4 @@
-# how-do-i-escape [![Build Status](https://travis-ci.org/p-jackson/how-do-i-escape.svg?branch=master)](https://travis-ci.org/p-jackson/how-do-i-escape)
+# how-do-i-escape [![Build Status](https://travis-ci.org/p-jackson/how-do-i-escape.svg?branch=master)](https://travis-ci.org/p-jackson/how-do-i-escape) [![Build status](https://ci.appveyor.com/api/projects/status/tlof6gpgu837vvx7?svg=true)](https://ci.appveyor.com/project/p-jackson/how-do-i-escape)
 
 > For when you ask yourself "how do I escape that"?
 
