@@ -1,4 +1,4 @@
-# how-do-i-escape
+# how-do-i-escape [![Build Status](https://travis-ci.org/p-jackson/how-do-i-escape.svg?branch=master)](https://travis-ci.org/p-jackson/how-do-i-escape)
 
 > For when you ask yourself "how do I escape that"?
 
