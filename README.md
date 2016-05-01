@@ -17,3 +17,10 @@ css  = "\00A7"
 html = &sect;
 js   = "\u00A7"
 ```
+
+## What I'm thinking for 1.0
+
+* Prefer HTML entities if one exists
+* Improve output readability (maybe with colour)
+* Try and reduce the time it takes to run `cargo install`
+* Run against *stable*, *beta* and *nightly* Rust
