@@ -23,5 +23,5 @@ js   = "\u00A7"
 * Prefer HTML entities if one exists
 * Improve output readability (maybe with colour)
 * Try and reduce the time it takes to run `cargo install`
-* Run against *stable*, *beta* and *nightly* Rust
+* ~~Test against *stable*, *beta* and *nightly* Rust~~
 * Read spec to figure out how graphemes > FFFF are supposed to work
