@@ -51,7 +51,11 @@ fn as_html(i: u32) -> String {
 }
 
 fn as_js(i: u32) -> String {
-  format!("\"\\u{:01$X}\"", i, 4)
+  if i <= 0xFFFF {
+    format!("\"\\u{:01$X}\"", i, 4)
+  } else {
+    format!("\"\\u{{{:X}}}\"", i)
+  }
 }
 
 #[cfg(test)]
@@ -62,6 +66,8 @@ mod tests {
   fn test_first_grapheme_as_int() {
     assert!(first_grapheme_as_int("\u{00A7}") == Some(0xA7));
     assert!(first_grapheme_as_int("beef") == Some(98));
+    assert!(first_grapheme_as_int("\u{10000}") == Some(0x10000));
+    assert!(first_grapheme_as_int("\u{10FFFF}") == Some(0x10FFFF));
     assert!(first_grapheme_as_int("") == None);
   }
 
@@ -86,6 +92,8 @@ mod tests {
     assert!(as_js(0) == r#""\u0000""#);
     assert!(as_js(0xFFFF) == r#""\uFFFF""#);
     assert!(as_js(0xBEEF) != r#""\ubeef""#);
-    //assert!(as_js(0x10000) == ?);
+    assert!(as_js(0x10000) == r#""\u{10000}""#);
+    assert!(as_js(0x10FFFF) == r#""\u{10FFFF}""#);
+    assert!(as_js(0xFFFFFFFF) == r#""\u{FFFFFFFF}""#);
   }
 }
