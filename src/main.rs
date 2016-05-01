@@ -31,15 +31,15 @@ fn main() {
     .and_then(|d| d.help(true).version(Some("v0.1.0".to_string())).decode())
     .unwrap_or_else(|e| e.exit());
 
-  let as_int = to_int(args.arg_grapheme);
-
-  println!("css  = {}", as_css(as_int));
-  println!("html = {}", as_html(as_int));
-  println!("js   = {}", as_js(as_int));
+  if let Some(as_int) = first_grapheme_as_int(&args.arg_grapheme) {
+    println!("css  = {}", as_css(as_int));
+    println!("html = {}", as_html(as_int));
+    println!("js   = {}", as_js(as_int));
+  }
 }
 
-fn to_int(grapheme: String) -> u32 {
-  grapheme.chars().next().unwrap() as u32
+fn first_grapheme_as_int(grapheme: &str) -> Option<u32> {
+  grapheme.chars().next().map(|c| c as u32)
 }
 
 fn as_css(i: u32) -> String {
@@ -52,4 +52,40 @@ fn as_html(i: u32) -> String {
 
 fn as_js(i: u32) -> String {
   format!("\"\\u{:01$X}\"", i, 4)
+}
+
+#[cfg(test)]
+mod tests {
+  use super::{first_grapheme_as_int, as_css, as_html, as_js};
+
+  #[test]
+  fn test_first_grapheme_as_int() {
+    assert!(first_grapheme_as_int("\u{00A7}") == Some(0xA7));
+    assert!(first_grapheme_as_int("beef") == Some(98));
+    assert!(first_grapheme_as_int("") == None);
+  }
+
+  #[test]
+  fn test_as_css() {
+    assert!(as_css(0) == r#""\0000""#);
+    assert!(as_css(0xFFFF) == r#""\FFFF""#);
+    assert!(as_css(0xBEEF) != r#""\beef""#);
+    //assert!(as_css(0x10000) == ?);
+  }
+
+  #[test]
+  fn test_as_html() {
+    assert!(as_html(0) == r#"&#x0000;"#);
+    assert!(as_html(0xFFFF) == r#"&#xFFFF;"#);
+    assert!(as_html(0xBEEF) != r#"&#xbeef;"#);
+    //assert!(as_html(0x10000) == ?);
+  }
+
+  #[test]
+  fn test_as_js() {
+    assert!(as_js(0) == r#""\u0000""#);
+    assert!(as_js(0xFFFF) == r#""\uFFFF""#);
+    assert!(as_js(0xBEEF) != r#""\ubeef""#);
+    //assert!(as_js(0x10000) == ?);
+  }
 }
