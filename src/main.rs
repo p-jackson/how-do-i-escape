@@ -27,8 +27,10 @@ struct Args {
 }
 
 fn main() {
+  let version = format!("v{}", env!("CARGO_PKG_VERSION"));
+
   let args: Args = Docopt::new(USAGE)
-    .and_then(|d| d.help(true).version(Some("v0.1.0".to_string())).decode())
+    .and_then(|d| d.help(true).version(Some(version)).decode())
     .unwrap_or_else(|e| e.exit());
 
   let grapheme = args.arg_grapheme;
