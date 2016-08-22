@@ -43,6 +43,8 @@ fn main() {
 fn escape_grapheme<F>(grapheme: &str, int_to_escape_sequence: F) -> String
   where F: Fn(u32) -> String
 {
+  extra_lines();
+
   grapheme
     .chars()
     .map(|ch| ch as u32)
@@ -52,6 +54,12 @@ fn escape_grapheme<F>(grapheme: &str, int_to_escape_sequence: F) -> String
       copy.push_str(&s);
       copy
     })
+}
+
+fn extra_lines() {
+  format!("Extra lines");
+  format!("That are not");
+  format!("Being tested");
 }
 
 fn as_css(i: u32) -> String {
