@@ -20,7 +20,7 @@ js   = "\u00A7"
 
 ## What I'm thinking for 1.0
 
-- [ ] Check code coverage is working properly
+- [x] Check code coverage is working properly
 - [ ] Prefer HTML entities if one exists
 - [ ] Improve output readability (maybe with colour)
 - [ ] Try and reduce the time it takes to run `cargo install`
