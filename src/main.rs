@@ -67,7 +67,7 @@ fn as_js(i: u32) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{as_css, as_html, as_js};
+    use super::{as_css, as_html, as_js, escape_grapheme};
 
     #[test]
     fn test_as_css() {
@@ -93,5 +93,14 @@ mod tests {
         assert!(as_js(0x10000) == r"\u{10000}");
         assert!(as_js(0x10FFFF) == r"\u{10FFFF}");
         assert!(as_js(0xFFFFFFFF) == r"\u{FFFFFFFF}");
+    }
+
+    #[test]
+    fn test_escape_grapheme() {
+        let always_hello = escape_grapheme("\u{FF}", |_| "hello".to_string());
+        assert!(always_hello == "hello");
+
+        let simple = escape_grapheme("\u{FF}", |i| format!("{}", i));
+        assert!(simple == "255");
     }
 }
