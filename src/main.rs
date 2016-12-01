@@ -2,6 +2,7 @@ extern crate docopt;
 extern crate rustc_serialize;
 
 use docopt::Docopt;
+use std::collections::HashMap;
 
 const USAGE: &'static str = "
 how-do-i-escape: Prints escape sequences for unicode graphemes
@@ -54,7 +55,16 @@ fn as_css(i: u32) -> String {
 }
 
 fn as_html(i: u32) -> String {
-    format!("&#x{:01$X};", i, 4)
+    match get_entity_map().get(&i) {
+        Some(entity) => entity.clone(),
+        None => format!("&#x{:01$X};", i, 4),
+    }
+}
+
+fn get_entity_map() -> HashMap<u32, String> {
+    let mut entity_map = HashMap::new();
+    entity_map.insert(',' as u32, r"&comma;".to_string());
+    entity_map
 }
 
 fn as_js(i: u32) -> String {
@@ -82,6 +92,7 @@ mod tests {
         assert!(as_html(0) == r"&#x0000;");
         assert!(as_html(0xFFFF) == r"&#xFFFF;");
         assert!(as_html(0xBEEF) != r"&#xbeef;");
+        assert!(as_html(',' as u32) == r"&comma;");
         // assert!(as_html(0x10000) == ?);
     }
 
