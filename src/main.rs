@@ -46,11 +46,7 @@ fn escape_grapheme<F>(grapheme: &str, int_to_escape_sequence: F) -> String
     grapheme.chars()
         .map(|ch| ch as u32)
         .map(int_to_escape_sequence)
-        .fold(String::new(), |c, s| {
-            let mut copy = c;
-            copy.push_str(&s);
-            copy
-        })
+        .collect()
 }
 
 fn as_css(i: u32) -> String {
