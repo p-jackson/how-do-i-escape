@@ -1,8 +1,10 @@
 extern crate docopt;
 extern crate rustc_serialize;
+extern crate entities;
 
+use std::char;
 use docopt::Docopt;
-use std::collections::HashMap;
+use entities::ENTITIES;
 
 const USAGE: &'static str = "
 how-do-i-escape: Prints escape sequences for unicode graphemes
@@ -54,25 +56,69 @@ fn as_css(i: u32) -> String {
     format!("\\{:01$X}", i, 4)
 }
 
-fn as_html(i: u32) -> String {
-    match get_entity_map().get(&i) {
-        Some(entity) => entity.clone(),
-        None => format!("&#x{:01$X};", i, 4),
-    }
-}
-
-fn get_entity_map() -> HashMap<u32, String> {
-    let mut entity_map = HashMap::new();
-    entity_map.insert(',' as u32, r"&comma;".to_string());
-    entity_map
-}
-
 fn as_js(i: u32) -> String {
     if i <= 0xFFFF {
         format!("\\u{:01$X}", i, 4)
     } else {
         format!("\\u{{{:X}}}", i)
     }
+}
+
+fn as_html(i: u32) -> String {
+    // Some characters have multiple entity options
+    // e.g. &quot; and &QUOT;
+    let entity_options = ENTITIES.iter().filter(|e| {
+        match e.codepoints {
+            entities::Codepoints::Single(cp) => cp == i,
+            _ => false,
+        }
+    }).collect::<Vec<_>>();
+
+    if entity_options.is_empty() {
+        format!("&#x{:01$X};", i, 4)
+    } else {
+        let nicest = choose_nice_entity(entity_options);
+        nicest.entity.to_string()
+    }
+}
+
+// "nice" means prefer lowercase and ends with a semicolon
+fn choose_nice_entity(options: Vec<&entities::Entity>) -> &entities::Entity {
+    assert!(!options.is_empty());
+
+    let nicest_entity = options.iter().find(|entity| {
+        has_semicolon(entity) && !is_all_caps(entity)
+    });
+
+    if let Some(entity) = nicest_entity {
+        return entity;
+    }
+
+    let less_nice_entity = options.iter().find(|entity| {
+        has_semicolon(entity)
+    });
+
+    if let Some(entity) = less_nice_entity {
+        return entity;
+    }
+
+    let ok_entity = options.iter().find(|entity| {
+        !is_all_caps(entity)
+    });
+
+    if let Some(entity) = ok_entity {
+        return entity;
+    }
+
+    options[0]
+}
+
+fn has_semicolon(entity: &entities::Entity) -> bool {
+    entity.entity.ends_with(";")
+}
+
+fn is_all_caps(entity: &entities::Entity) -> bool {
+    !entity.entity.chars().any(char::is_lowercase)
 }
 
 #[cfg(test)]
@@ -93,6 +139,7 @@ mod tests {
         assert!(as_html(0xFFFF) == r"&#xFFFF;");
         assert!(as_html(0xBEEF) != r"&#xbeef;");
         assert!(as_html(',' as u32) == r"&comma;");
+        assert!(as_html('>' as u32) == r"&gt;");
         // assert!(as_html(0x10000) == ?);
     }
 

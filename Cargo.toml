@@ -12,3 +12,4 @@ keywords = ["escape", "escaping", "unicode", "grapheme", "character"]
 [dependencies]
 docopt = "0.6.80"
 rustc-serialize = "0.3.19"
+entities = "0.2.0"
