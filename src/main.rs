@@ -127,38 +127,38 @@ mod tests {
 
     #[test]
     fn test_as_css() {
-        assert!(as_css(0) == r"\0000");
-        assert!(as_css(0xFFFF) == r"\FFFF");
-        assert!(as_css(0xBEEF) != r"\beef");
-        // assert!(as_css(0x10000) == ?);
+        assert_eq!(as_css(0), r"\0000");
+        assert_eq!(as_css(0xFFFF), r"\FFFF");
+        assert_ne!(as_css(0xBEEF), r"\beef");
+        // assert_eq!(as_css(0x10000), ?);
     }
 
     #[test]
     fn test_as_html() {
-        assert!(as_html(0) == r"&#x0000;");
-        assert!(as_html(0xFFFF) == r"&#xFFFF;");
-        assert!(as_html(0xBEEF) != r"&#xbeef;");
-        assert!(as_html(',' as u32) == r"&comma;");
-        assert!(as_html('>' as u32) == r"&gt;");
-        // assert!(as_html(0x10000) == ?);
+        assert_eq!(as_html(0), r"&#x0000;");
+        assert_eq!(as_html(0xFFFF), r"&#xFFFF;");
+        assert_ne!(as_html(0xBEEF), r"&#xbeef;");
+        assert_eq!(as_html(',' as u32), r"&comma;");
+        assert_eq!(as_html('>' as u32), r"&gt;");
+        // assert_eq!(as_html(0x10000), ?);
     }
 
     #[test]
     fn test_as_js() {
-        assert!(as_js(0) == r"\u0000");
-        assert!(as_js(0xFFFF) == r"\uFFFF");
-        assert!(as_js(0xBEEF) != r"\ubeef");
-        assert!(as_js(0x10000) == r"\u{10000}");
-        assert!(as_js(0x10FFFF) == r"\u{10FFFF}");
-        assert!(as_js(0xFFFFFFFF) == r"\u{FFFFFFFF}");
+        assert_eq!(as_js(0), r"\u0000");
+        assert_eq!(as_js(0xFFFF), r"\uFFFF");
+        assert_ne!(as_js(0xBEEF), r"\ubeef");
+        assert_eq!(as_js(0x10000), r"\u{10000}");
+        assert_eq!(as_js(0x10FFFF), r"\u{10FFFF}");
+        assert_eq!(as_js(0xFFFFFFFF), r"\u{FFFFFFFF}");
     }
 
     #[test]
     fn test_escape_grapheme() {
         let always_hello = escape_grapheme("\u{FF}", |_| "hello".to_string());
-        assert!(always_hello == "hello");
+        assert_eq!(always_hello, "hello");
 
         let simple = escape_grapheme("\u{FF}", |i| format!("{}", i));
-        assert!(simple == "255");
+        assert_eq!(simple, "255");
     }
 }
