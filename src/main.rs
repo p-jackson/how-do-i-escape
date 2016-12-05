@@ -3,9 +3,12 @@ extern crate rustc_serialize;
 extern crate entities;
 
 
-use std::char;
+mod css;
+mod html;
+mod js;
+
+
 use docopt::Docopt;
-use entities::ENTITIES;
 
 
 const USAGE: &'static str = "
@@ -42,9 +45,9 @@ fn main() {
 
     let grapheme = args.arg_grapheme;
 
-    println!(r#"css  = "{}""#, escape_grapheme(&grapheme, as_css));
-    println!(r#"html = {}"#, escape_grapheme(&grapheme, as_html));
-    println!(r#"js   = "{}""#, escape_grapheme(&grapheme, as_js));
+    println!(r#"css  = "{}""#, escape_grapheme(&grapheme, css::as_css));
+    println!(r#"html = {}"#, escape_grapheme(&grapheme, html::as_html));
+    println!(r#"js   = "{}""#, escape_grapheme(&grapheme, js::as_js));
 }
 
 
@@ -58,111 +61,9 @@ fn escape_grapheme<F>(grapheme: &str, int_to_escape_sequence: F) -> String
 }
 
 
-fn as_css(i: u32) -> String {
-    format!("\\{:01$X}", i, 4)
-}
-
-
-fn as_js(i: u32) -> String {
-    if i <= 0xFFFF {
-        format!("\\u{:01$X}", i, 4)
-    } else {
-        format!("\\u{{{:X}}}", i)
-    }
-}
-
-
-fn as_html(i: u32) -> String {
-    // Some characters have multiple entity options
-    // e.g. &quot; and &QUOT;
-    let entity_options = ENTITIES.iter()
-        .filter(|e| {
-            match e.codepoints {
-                entities::Codepoints::Single(cp) => cp == i,
-                _ => false,
-            }
-        })
-        .collect::<Vec<_>>();
-
-    if entity_options.is_empty() {
-        format!("&#x{:01$X};", i, 4)
-    } else {
-        let nicest = choose_nice_entity(entity_options);
-        nicest.entity.to_string()
-    }
-}
-
-
-// "nice" means prefer lowercase and ends with a semicolon
-fn choose_nice_entity(options: Vec<&entities::Entity>) -> &entities::Entity {
-    assert!(!options.is_empty());
-
-    let nicest_entity = options.iter().find(|entity| has_semicolon(entity) && !is_all_caps(entity));
-
-    if let Some(entity) = nicest_entity {
-        return entity;
-    }
-
-    let less_nice_entity = options.iter().find(|entity| has_semicolon(entity));
-
-    if let Some(entity) = less_nice_entity {
-        return entity;
-    }
-
-    let ok_entity = options.iter().find(|entity| !is_all_caps(entity));
-
-    if let Some(entity) = ok_entity {
-        return entity;
-    }
-
-    options[0]
-}
-
-
-fn has_semicolon(entity: &entities::Entity) -> bool {
-    entity.entity.ends_with(";")
-}
-
-
-fn is_all_caps(entity: &entities::Entity) -> bool {
-    !entity.entity.chars().any(char::is_lowercase)
-}
-
-
 #[cfg(test)]
 mod tests {
-    use super::{as_css, as_html, as_js, escape_grapheme};
-
-
-    #[test]
-    fn test_as_css() {
-        assert_eq!(as_css(0), r"\0000");
-        assert_eq!(as_css(0xFFFF), r"\FFFF");
-        assert_ne!(as_css(0xBEEF), r"\beef");
-        // assert_eq!(as_css(0x10000), ?);
-    }
-
-
-    #[test]
-    fn test_as_html() {
-        assert_eq!(as_html(0), r"&#x0000;");
-        assert_eq!(as_html(0xFFFF), r"&#xFFFF;");
-        assert_ne!(as_html(0xBEEF), r"&#xbeef;");
-        assert_eq!(as_html(',' as u32), r"&comma;");
-        assert_eq!(as_html('>' as u32), r"&gt;");
-        // assert_eq!(as_html(0x10000), ?);
-    }
-
-
-    #[test]
-    fn test_as_js() {
-        assert_eq!(as_js(0), r"\u0000");
-        assert_eq!(as_js(0xFFFF), r"\uFFFF");
-        assert_ne!(as_js(0xBEEF), r"\ubeef");
-        assert_eq!(as_js(0x10000), r"\u{10000}");
-        assert_eq!(as_js(0x10FFFF), r"\u{10FFFF}");
-        assert_eq!(as_js(0xFFFFFFFF), r"\u{FFFFFFFF}");
-    }
+    use super::escape_grapheme;
 
 
     #[test]
