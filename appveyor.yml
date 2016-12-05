@@ -11,6 +11,10 @@ environment:
     - RUST_VERSION: beta
     - RUST_VERSION: nightly
 
+matrix:
+  allow_failures:
+    - RUST_VERSION: nightly
+
 build: false
 
 test_script:
