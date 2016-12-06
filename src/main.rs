@@ -52,12 +52,20 @@ fn main() {
 
 
 fn escape_grapheme<F>(grapheme: &str, int_to_escape_sequence: F) -> String
-    where F: Fn(u32) -> String
+    where F: Fn(&mut Iterator<Item = u32>) -> Option<String>
 {
-    grapheme.chars()
-        .map(|ch| ch as u32)
-        .map(int_to_escape_sequence)
-        .collect()
+    let mut result = String::new();
+    let mut iter = grapheme.chars().map(|ch| ch as u32);
+
+    loop {
+        match int_to_escape_sequence(&mut iter) {
+            Some(s) => result.push_str(&s),
+            None => break,
+        }
+    }
+
+    result
+
 }
 
 
@@ -68,10 +76,11 @@ mod tests {
 
     #[test]
     fn test_escape_grapheme() {
-        let always_hello = escape_grapheme("\u{FF}", |_| "hello".to_string());
+        let always_hello = escape_grapheme("\u{FF}",
+                                           |iter| iter.next().map(|_| "hello".to_string()));
         assert_eq!(always_hello, "hello");
 
-        let simple = escape_grapheme("\u{FF}", |i| format!("{}", i));
+        let simple = escape_grapheme("\u{FF}", |iter| iter.next().map(|i| format!("{}", i)));
         assert_eq!(simple, "255");
     }
 }

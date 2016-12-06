@@ -2,23 +2,25 @@ use std::char;
 use entities::{ENTITIES, Codepoints};
 
 
-pub fn as_html(i: u32) -> String {
-    // Some characters have multiple entity options
-    // e.g. &quot; and &QUOT;
-    let entity_options = ENTITIES.iter()
-        .filter_map(|e| {
-            match e.codepoints {
-                Codepoints::Single(cp) => if cp == i { Some(e.entity) } else { None },
-                _ => None,
-            }
-        })
-        .collect::<Vec<_>>();
+pub fn as_html(iter: &mut Iterator<Item = u32>) -> Option<String> {
+    iter.next().map(|i| {
+        // Some characters have multiple entity options
+        // e.g. &quot; and &QUOT;
+        let entity_options = ENTITIES.iter()
+            .filter_map(|e| {
+                match e.codepoints {
+                    Codepoints::Single(cp) => if cp == i { Some(e.entity) } else { None },
+                    _ => None,
+                }
+            })
+            .collect::<Vec<_>>();
 
-    if entity_options.is_empty() {
-        format!("&#x{:01$X};", i, 4)
-    } else {
-        choose_nice_entity(entity_options).to_string()
-    }
+        if entity_options.is_empty() {
+            format!("&#x{:01$X};", i, 4)
+        } else {
+            choose_nice_entity(entity_options).to_string()
+        }
+    })
 }
 
 
@@ -80,16 +82,42 @@ fn is_all_lowercase(entity: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::{as_html, ends_with_semicolon, choose_nice_entity, is_all_caps, is_all_lowercase};
+    use std::iter::{empty, once};
+
+
+    #[test]
+    fn empty_iterator() {
+        assert_eq!(as_html(&mut empty()), None);
+    }
 
 
     #[test]
     fn test_as_html() {
-        assert_eq!(as_html(0), r"&#x0000;");
-        assert_eq!(as_html(0xFFFF), r"&#xFFFF;");
-        assert_ne!(as_html(0xBEEF), r"&#xbeef;");
-        assert_eq!(as_html(',' as u32), r"&comma;");
-        assert_eq!(as_html('>' as u32), r"&gt;");
-        // assert_eq!(as_html(0x10000), ?);
+        let expected1 = Some(r"&#x0000;".to_string());
+        assert_eq!(as_html(&mut once(0)), expected1);
+
+        let expected2 = Some(r"&#xFFFF;".to_string());
+        assert_eq!(as_html(&mut once(0xFFFF)), expected2);
+
+        let expected3 = Some(r"&#xbeef;".to_string());
+        assert_ne!(as_html(&mut once(0xBEEF)), expected3);
+
+        let expected4 = Some(r"&comma;".to_string());
+        assert_eq!(as_html(&mut once(',' as u32)), expected4);
+
+        let expected5 = Some(r"&gt;".to_string());
+        assert_eq!(as_html(&mut once('>' as u32)), expected5);
+
+        // assert_eq!(as_html(&mut once(0x10000)), ?);
+    }
+
+
+    #[test]
+    fn loop_without_crashing() {
+        let v = vec![0, 1, 2];
+        let mut iter = v.into_iter();
+
+        while let Some(_) = as_html(&mut iter) {}
     }
 
 
