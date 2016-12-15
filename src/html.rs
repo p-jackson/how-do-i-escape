@@ -28,6 +28,10 @@ impl super::CharEncoder for Html {
             }
         })
     }
+
+    fn wrap_in_quotes() -> bool {
+        false
+    }
 }
 
 

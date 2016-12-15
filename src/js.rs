@@ -13,6 +13,10 @@ impl super::CharEncoder for Js {
             }
         })
     }
+
+    fn wrap_in_quotes() -> bool {
+        true
+    }
 }
 
 

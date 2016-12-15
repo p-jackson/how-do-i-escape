@@ -13,6 +13,7 @@ use docopt::Docopt;
 
 trait CharEncoder: 'static {
     fn encode(&mut Iterator<Item = char>) -> Option<String>;
+    fn wrap_in_quotes() -> bool;
 }
 
 
@@ -50,9 +51,12 @@ fn main() {
 
     let grapheme = args.arg_grapheme;
 
-    println!(r#"css  = "{}""#, escape_grapheme(&grapheme, css::Css));
-    println!(r#"html = {}"#, escape_grapheme(&grapheme, html::Html));
-    println!(r#"js   = "{}""#, escape_grapheme(&grapheme, js::Js));
+    println!("");
+    println!("  {:<10} -- css", escape_grapheme(&grapheme, css::Css));
+    println!("");
+    println!("  {:<10} -- html", escape_grapheme(&grapheme, html::Html));
+    println!("");
+    println!("  {:<10} -- javascript", escape_grapheme(&grapheme, js::Js));
 }
 
 
@@ -67,8 +71,11 @@ fn escape_grapheme<T: CharEncoder>(grapheme: &str, _: T) -> String {
         }
     }
 
-    result
-
+    if T::wrap_in_quotes() {
+        format!(r#""{}""#, result)
+    } else {
+        result
+    }
 }
 
 
