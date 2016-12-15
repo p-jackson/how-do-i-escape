@@ -21,8 +21,9 @@ js   = "\u00A7"
 ## What I'm thinking for 1.0
 
 - [x] Check code coverage is working properly
-- [ ] Prefer HTML entities if one exists
+- [x] Prefer HTML entities if one exists
 - [ ] Improve output readability (maybe with colour)
 - [ ] Try and reduce the time it takes to run `cargo install`
 - [x] Test against *stable*, *beta* and *nightly* Rust
 - [x] Read spec to figure out how graphemes > FFFF are supposed to work
+- [ ] Use HTML entities that are made of two code points
