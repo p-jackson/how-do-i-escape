@@ -5,6 +5,10 @@ impl super::CharEncoder for Css {
     fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
         iter.next().map(|i| format!("\\{:01$X}", i as u32, 4))
     }
+
+    fn wrap_in_quotes() -> bool {
+        true
+    }
 }
 
 
