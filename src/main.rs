@@ -11,6 +11,11 @@ mod js;
 use docopt::Docopt;
 
 
+trait CharEncoder: 'static {
+    fn encode(&mut Iterator<Item = char>) -> Option<String>;
+}
+
+
 const USAGE: &'static str = "
 how-do-i-escape: Prints escape sequences for unicode graphemes
 
@@ -45,20 +50,18 @@ fn main() {
 
     let grapheme = args.arg_grapheme;
 
-    println!(r#"css  = "{}""#, escape_grapheme(&grapheme, css::as_css));
-    println!(r#"html = {}"#, escape_grapheme(&grapheme, html::as_html));
-    println!(r#"js   = "{}""#, escape_grapheme(&grapheme, js::as_js));
+    println!(r#"css  = "{}""#, escape_grapheme(&grapheme, css::Css));
+    println!(r#"html = {}"#, escape_grapheme(&grapheme, html::Html));
+    println!(r#"js   = "{}""#, escape_grapheme(&grapheme, js::Js));
 }
 
 
-fn escape_grapheme<F>(grapheme: &str, int_to_escape_sequence: F) -> String
-    where F: Fn(&mut Iterator<Item = char>) -> Option<String>
-{
+fn escape_grapheme<T: CharEncoder>(grapheme: &str, _: T) -> String {
     let mut result = String::new();
     let mut iter = grapheme.chars();
 
     loop {
-        match int_to_escape_sequence(&mut iter) {
+        match T::encode(&mut iter) {
             Some(s) => result.push_str(&s),
             None => break,
         }
@@ -71,15 +74,31 @@ fn escape_grapheme<F>(grapheme: &str, int_to_escape_sequence: F) -> String
 
 #[cfg(test)]
 mod tests {
-    use super::escape_grapheme;
+    use super::{CharEncoder, escape_grapheme};
 
 
     #[test]
     fn test_escape_grapheme() {
-        let always_hello = escape_grapheme("a", |iter| iter.next().map(|_| "hello".to_string()));
+        struct AlwaysHello;
+
+        impl CharEncoder for AlwaysHello {
+            fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
+                iter.next().map(|_| "hello".to_string())
+            }
+        }
+
+        let always_hello = escape_grapheme("a", AlwaysHello);
         assert_eq!(always_hello, "hello");
 
-        let simple = escape_grapheme("a", |iter| iter.next().map(|i| format!("{}", i as u32)));
+        struct Simple;
+
+        impl CharEncoder for Simple {
+            fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
+                iter.next().map(|i| format!("{}", i as u32))
+            }
+        }
+
+        let simple = escape_grapheme("a", Simple);
         assert_eq!(simple, "97");
     }
 }

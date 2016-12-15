@@ -2,27 +2,32 @@ use std::char;
 use entities::{ENTITIES, Codepoints};
 
 
-pub fn as_html(iter: &mut Iterator<Item = char>) -> Option<String> {
-    iter.next().map(|ch| {
-        let i = ch as u32;
+pub struct Html;
 
-        // Some characters have multiple entity options
-        // e.g. &quot; and &QUOT;
-        let entity_options = ENTITIES.iter()
-            .filter_map(|e| {
-                match e.codepoints {
-                    Codepoints::Single(cp) => if cp == i { Some(e.entity) } else { None },
-                    _ => None,
-                }
-            })
-            .collect::<Vec<_>>();
 
-        if entity_options.is_empty() {
-            format!("&#x{:01$X};", i, 4)
-        } else {
-            choose_nice_entity(entity_options).to_string()
-        }
-    })
+impl super::CharEncoder for Html {
+    fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
+        iter.next().map(|ch| {
+            let i = ch as u32;
+
+            // Some characters have multiple entity options
+            // e.g. &quot; and &QUOT;
+            let entity_options = ENTITIES.iter()
+                .filter_map(|e| {
+                    match e.codepoints {
+                        Codepoints::Single(cp) => if cp == i { Some(e.entity) } else { None },
+                        _ => None,
+                    }
+                })
+                .collect::<Vec<_>>();
+
+            if entity_options.is_empty() {
+                format!("&#x{:01$X};", i, 4)
+            } else {
+                choose_nice_entity(entity_options).to_string()
+            }
+        })
+    }
 }
 
 
@@ -83,42 +88,43 @@ fn is_all_lowercase(entity: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{as_html, ends_with_semicolon, choose_nice_entity, is_all_caps, is_all_lowercase};
+    use super::{Html, ends_with_semicolon, choose_nice_entity, is_all_caps, is_all_lowercase};
+    use super::super::CharEncoder;
     use std::iter::{empty, once};
 
 
     #[test]
     fn empty_iterator() {
-        assert_eq!(as_html(&mut empty()), None);
+        assert_eq!(Html::encode(&mut empty()), None);
     }
 
 
     #[test]
     fn test_as_html() {
         let expected1 = Some(r"&#x0000;".to_string());
-        assert_eq!(as_html(&mut "\u{0}".chars()), expected1);
+        assert_eq!(Html::encode(&mut "\u{0}".chars()), expected1);
 
         let expected2 = Some(r"&#x0061;".to_string());
-        assert_eq!(as_html(&mut once('a')), expected2);
+        assert_eq!(Html::encode(&mut once('a')), expected2);
 
         let expected3 = Some(r"&#x006C;".to_string());
-        assert_eq!(as_html(&mut once('l')), expected3);
+        assert_eq!(Html::encode(&mut once('l')), expected3);
 
         let expected4 = Some(r"&comma;".to_string());
-        assert_eq!(as_html(&mut once(',')), expected4);
+        assert_eq!(Html::encode(&mut once(',')), expected4);
 
         let expected5 = Some(r"&gt;".to_string());
-        assert_eq!(as_html(&mut once('>')), expected5);
+        assert_eq!(Html::encode(&mut once('>')), expected5);
 
         // "𝔄" is a single code pointer greater than FFFF
         let expected6 = Some(r"&Afr;".to_string());
-        assert_eq!(as_html(&mut once('𝔄')), expected6);
+        assert_eq!(Html::encode(&mut once('𝔄')), expected6);
 
         // A couple of code points higher than "𝔄" doesn't have
         // an entity (may not even be valid?) but is greater than
         // FFFF.
         let expected7 = Some(r"&#x1D506;".to_string());
-        assert_eq!(as_html(&mut "\u{1D506}".chars()), expected7);
+        assert_eq!(Html::encode(&mut "\u{1D506}".chars()), expected7);
     }
 
 
@@ -127,7 +133,7 @@ mod tests {
         let v = vec!['a', 'b', 'c'];
         let mut iter = v.into_iter();
 
-        while let Some(_) = as_html(&mut iter) {}
+        while let Some(_) = Html::encode(&mut iter) {}
     }
 
 
