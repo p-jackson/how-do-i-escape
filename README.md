@@ -25,4 +25,4 @@ js   = "\u00A7"
 - [ ] Improve output readability (maybe with colour)
 - [ ] Try and reduce the time it takes to run `cargo install`
 - [x] Test against *stable*, *beta* and *nightly* Rust
-- [ ] Read spec to figure out how graphemes > FFFF are supposed to work
+- [x] Read spec to figure out how graphemes > FFFF are supposed to work

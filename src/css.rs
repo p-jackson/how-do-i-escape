@@ -1,5 +1,5 @@
-pub fn as_css(iter: &mut Iterator<Item = u32>) -> Option<String> {
-    iter.next().map(|i| format!("\\{:01$X}", i, 4))
+pub fn as_css(iter: &mut Iterator<Item = char>) -> Option<String> {
+    iter.next().map(|i| format!("\\{:01$X}", i as u32, 4))
 }
 
 
@@ -18,21 +18,23 @@ mod tests {
     #[test]
     fn values() {
         let expected1 = Some(r"\0000".to_string());
-        assert_eq!(as_css(&mut once(0)), expected1);
+        assert_eq!(as_css(&mut "\u{0}".chars()), expected1);
 
-        let expected2 = Some(r"\FFFF".to_string());
-        assert_eq!(as_css(&mut once(0xFFFF)), expected2);
+        let expected2 = Some(r"\005E".to_string());
+        assert_eq!(as_css(&mut once('^')), expected2);
 
-        let expected3 = Some(r"\beef".to_string());
-        assert_ne!(as_css(&mut once(0xBEEF)), expected3);
+        let expected3 = Some(r"\210B".to_string());
+        assert_eq!(as_css(&mut once('ℋ')), expected3);
 
-        // assert_eq!(as_css(once(0x10000)), ?);
+        // "𝔄" is a single code pointer greater than FFFF
+        let expected4 = Some(r"\1D504".to_string());
+        assert_eq!(as_css(&mut once('𝔄')), expected4);
     }
 
 
     #[test]
     fn loop_without_crashing() {
-        let v = vec![0, 1, 2];
+        let v = vec!['a', 'b', 'c'];
         let mut iter = v.into_iter();
 
         while let Some(_) = as_css(&mut iter) {}

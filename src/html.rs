@@ -2,8 +2,10 @@ use std::char;
 use entities::{ENTITIES, Codepoints};
 
 
-pub fn as_html(iter: &mut Iterator<Item = u32>) -> Option<String> {
-    iter.next().map(|i| {
+pub fn as_html(iter: &mut Iterator<Item = char>) -> Option<String> {
+    iter.next().map(|ch| {
+        let i = ch as u32;
+
         // Some characters have multiple entity options
         // e.g. &quot; and &QUOT;
         let entity_options = ENTITIES.iter()
@@ -94,27 +96,35 @@ mod tests {
     #[test]
     fn test_as_html() {
         let expected1 = Some(r"&#x0000;".to_string());
-        assert_eq!(as_html(&mut once(0)), expected1);
+        assert_eq!(as_html(&mut "\u{0}".chars()), expected1);
 
-        let expected2 = Some(r"&#xFFFF;".to_string());
-        assert_eq!(as_html(&mut once(0xFFFF)), expected2);
+        let expected2 = Some(r"&#x0061;".to_string());
+        assert_eq!(as_html(&mut once('a')), expected2);
 
-        let expected3 = Some(r"&#xbeef;".to_string());
-        assert_ne!(as_html(&mut once(0xBEEF)), expected3);
+        let expected3 = Some(r"&#x006C;".to_string());
+        assert_eq!(as_html(&mut once('l')), expected3);
 
         let expected4 = Some(r"&comma;".to_string());
-        assert_eq!(as_html(&mut once(',' as u32)), expected4);
+        assert_eq!(as_html(&mut once(',')), expected4);
 
         let expected5 = Some(r"&gt;".to_string());
-        assert_eq!(as_html(&mut once('>' as u32)), expected5);
+        assert_eq!(as_html(&mut once('>')), expected5);
 
-        // assert_eq!(as_html(&mut once(0x10000)), ?);
+        // "𝔄" is a single code pointer greater than FFFF
+        let expected6 = Some(r"&Afr;".to_string());
+        assert_eq!(as_html(&mut once('𝔄')), expected6);
+
+        // A couple of code points higher than "𝔄" doesn't have
+        // an entity (may not even be valid?) but is greater than
+        // FFFF.
+        let expected7 = Some(r"&#x1D506;".to_string());
+        assert_eq!(as_html(&mut "\u{1D506}".chars()), expected7);
     }
 
 
     #[test]
     fn loop_without_crashing() {
-        let v = vec![0, 1, 2];
+        let v = vec!['a', 'b', 'c'];
         let mut iter = v.into_iter();
 
         while let Some(_) = as_html(&mut iter) {}

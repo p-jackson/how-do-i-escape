@@ -1,5 +1,7 @@
-pub fn as_js(iter: &mut Iterator<Item = u32>) -> Option<String> {
-    iter.next().map(|i| {
+pub fn as_js(iter: &mut Iterator<Item = char>) -> Option<String> {
+    iter.next().map(|ch| {
+        let i = ch as u32;
+
         if i <= 0xFFFF {
             format!("\\u{:01$X}", i, 4)
         } else {
@@ -24,28 +26,23 @@ mod tests {
     #[test]
     fn values() {
         let expected1 = Some(r"\u0000".to_string());
-        assert_eq!(as_js(&mut once(0)), expected1);
+        assert_eq!(as_js(&mut "\u{0}".chars()), expected1);
 
-        let expected2 = Some(r"\uFFFF".to_string());
-        assert_eq!(as_js(&mut once(0xFFFF)), expected2);
+        let expected2 = Some(r"\u005E".to_string());
+        assert_eq!(as_js(&mut once('^')), expected2);
 
-        let expected3 = Some(r"\ubeef".to_string());
-        assert_ne!(as_js(&mut once(0xBEEF)), expected3);
+        let expected3 = Some(r"\u210B".to_string());
+        assert_eq!(as_js(&mut once('ℋ')), expected3);
 
-        let expected4 = Some(r"\u{10000}".to_string());
-        assert_eq!(as_js(&mut once(0x10000)), expected4);
-
-        let expected5 = Some(r"\u{10FFFF}".to_string());
-        assert_eq!(as_js(&mut once(0x10FFFF)), expected5);
-
-        let expected6 = Some(r"\u{FFFFFFFF}".to_string());
-        assert_eq!(as_js(&mut once(0xFFFFFFFF)), expected6);
+        // "𝔄" is a single code pointer greater than FFFF
+        let expected4 = Some(r"\u{1D504}".to_string());
+        assert_eq!(as_js(&mut once('𝔄')), expected4);
     }
 
 
     #[test]
     fn loop_without_crashing() {
-        let v = vec![0, 1, 2];
+        let v = vec!['a', 'b', 'c'];
         let mut iter = v.into_iter();
 
         while let Some(_) = as_js(&mut iter) {}

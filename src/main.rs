@@ -52,10 +52,10 @@ fn main() {
 
 
 fn escape_grapheme<F>(grapheme: &str, int_to_escape_sequence: F) -> String
-    where F: Fn(&mut Iterator<Item = u32>) -> Option<String>
+    where F: Fn(&mut Iterator<Item = char>) -> Option<String>
 {
     let mut result = String::new();
-    let mut iter = grapheme.chars().map(|ch| ch as u32);
+    let mut iter = grapheme.chars();
 
     loop {
         match int_to_escape_sequence(&mut iter) {
@@ -76,11 +76,10 @@ mod tests {
 
     #[test]
     fn test_escape_grapheme() {
-        let always_hello = escape_grapheme("\u{FF}",
-                                           |iter| iter.next().map(|_| "hello".to_string()));
+        let always_hello = escape_grapheme("a", |iter| iter.next().map(|_| "hello".to_string()));
         assert_eq!(always_hello, "hello");
 
-        let simple = escape_grapheme("\u{FF}", |iter| iter.next().map(|i| format!("{}", i)));
-        assert_eq!(simple, "255");
+        let simple = escape_grapheme("a", |iter| iter.next().map(|i| format!("{}", i as u32)));
+        assert_eq!(simple, "97");
     }
 }
