@@ -20,10 +20,17 @@ impl super::CharEncoder for Js {
 }
 
 
+impl super::Named for Js {
+    fn name() -> &'static str {
+        "javascript"
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::Js;
-    use super::super::CharEncoder;
+    use super::super::{CharEncoder, Named};
     use std::iter::{empty, once};
 
 
@@ -62,5 +69,11 @@ mod tests {
     #[test]
     fn quotes() {
         assert!(Js::wrap_in_quotes());
+    }
+
+
+    #[test]
+    fn name() {
+        assert_eq!(Js::name(), "javascript");
     }
 }

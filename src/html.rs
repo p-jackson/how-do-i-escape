@@ -35,6 +35,13 @@ impl super::CharEncoder for Html {
 }
 
 
+impl super::Named for Html {
+    fn name() -> &'static str {
+        "html"
+    }
+}
+
+
 // "nice" means prefer lowercase and ends with a semicolon
 fn choose_nice_entity(options: Vec<&str>) -> &str {
     assert!(!options.is_empty());
@@ -93,7 +100,7 @@ fn is_all_lowercase(entity: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::{Html, ends_with_semicolon, choose_nice_entity, is_all_caps, is_all_lowercase};
-    use super::super::CharEncoder;
+    use super::super::{CharEncoder, Named};
     use std::iter::{empty, once};
 
 
@@ -144,6 +151,12 @@ mod tests {
     #[test]
     fn no_quotes() {
         assert!(!Html::wrap_in_quotes());
+    }
+
+
+    #[test]
+    fn name() {
+        assert_eq!(Html::name(), "html");
     }
 
 
