@@ -57,4 +57,10 @@ mod tests {
 
         while let Some(_) = Js::encode(&mut iter) {}
     }
+
+
+    #[test]
+    fn quotes() {
+        assert!(Js::wrap_in_quotes());
+    }
 }

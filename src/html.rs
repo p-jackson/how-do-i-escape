@@ -142,6 +142,12 @@ mod tests {
 
 
     #[test]
+    fn no_quotes() {
+        assert!(!Html::wrap_in_quotes());
+    }
+
+
+    #[test]
     fn test_choose_nice_entity() {
         let e = ["&BAD", "&Bad", "&bad", "&BAD;", "&Bad;", "&bad;"];
 
