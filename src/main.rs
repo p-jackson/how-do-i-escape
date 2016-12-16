@@ -107,11 +107,11 @@ mod tests {
                 iter.next().map(|i| format!("{}", i as u32))
             }
             fn wrap_in_quotes() -> bool {
-                false
+                true
             }
         }
 
         let simple = escape_grapheme("a", Simple);
-        assert_eq!(simple, "97");
+        assert_eq!(simple, r#""97""#);
     }
 }

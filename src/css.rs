@@ -49,4 +49,10 @@ mod tests {
 
         while let Some(_) = Css::encode(&mut iter) {}
     }
+
+
+    #[test]
+    fn quotes() {
+        assert!(Css::wrap_in_quotes());
+    }
 }
