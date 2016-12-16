@@ -1,3 +1,4 @@
+extern crate ansi_term;
 extern crate docopt;
 extern crate rustc_serialize;
 extern crate entities;
@@ -14,6 +15,11 @@ use docopt::Docopt;
 trait CharEncoder: 'static {
     fn encode(&mut Iterator<Item = char>) -> Option<String>;
     fn wrap_in_quotes() -> bool;
+}
+
+
+trait Named {
+    fn name() -> &'static str;
 }
 
 
@@ -52,11 +58,20 @@ fn main() {
     let grapheme = args.arg_grapheme;
 
     println!("");
-    println!("  {:<10} -- css", escape_grapheme(&grapheme, css::Css));
+    println!("{}", language_output(&grapheme, css::Css));
     println!("");
-    println!("  {:<10} -- html", escape_grapheme(&grapheme, html::Html));
+    println!("{}", language_output(&grapheme, html::Html));
     println!("");
-    println!("  {:<10} -- javascript", escape_grapheme(&grapheme, js::Js));
+    println!("{}", language_output(&grapheme, js::Js));
+}
+
+
+fn language_output<T: CharEncoder + Named>(grapheme: &str, t: T) -> String {
+    let grey = ansi_term::Colour::Black.bold();
+    let escape = escape_grapheme(grapheme, t);
+    let lang = grey.paint(format!("-- {}", T::name()));
+
+    format!("  {:<10} {}", escape, lang)
 }
 
 
@@ -81,7 +96,7 @@ fn escape_grapheme<T: CharEncoder>(grapheme: &str, _: T) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{CharEncoder, escape_grapheme};
+    use super::{CharEncoder, Named, language_output, escape_grapheme};
 
 
     #[test]
@@ -113,5 +128,32 @@ mod tests {
 
         let simple = escape_grapheme("a", Simple);
         assert_eq!(simple, r#""97""#);
+    }
+
+
+    #[test]
+    fn test_output() {
+        struct AlwaysHello;
+
+        impl CharEncoder for AlwaysHello {
+            fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
+                iter.next().map(|_| "hello".to_string())
+            }
+            fn wrap_in_quotes() -> bool {
+                false
+            }
+        }
+
+        impl Named for AlwaysHello {
+            fn name() -> &'static str {
+                "AlwaysHello"
+            }
+        }
+
+        let grey = super::ansi_term::Colour::Black.bold();
+
+        let actual = language_output("a", AlwaysHello);
+        let expected = format!("  hello      {}", grey.paint("-- AlwaysHello"));
+        assert_eq!(actual, expected);
     }
 }

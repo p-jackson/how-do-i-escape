@@ -12,10 +12,17 @@ impl super::CharEncoder for Css {
 }
 
 
+impl super::Named for Css {
+    fn name() -> &'static str {
+        "css"
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::Css;
-    use super::super::CharEncoder;
+    use super::super::{CharEncoder, Named};
     use std::iter::{empty, once};
 
 
@@ -54,5 +61,11 @@ mod tests {
     #[test]
     fn quotes() {
         assert!(Css::wrap_in_quotes());
+    }
+
+
+    #[test]
+    fn name() {
+        assert_eq!(Css::name(), "css");
     }
 }
