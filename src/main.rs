@@ -92,6 +92,9 @@ mod tests {
             fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
                 iter.next().map(|_| "hello".to_string())
             }
+            fn wrap_in_quotes() -> bool {
+                false
+            }
         }
 
         let always_hello = escape_grapheme("a", AlwaysHello);
@@ -102,6 +105,9 @@ mod tests {
         impl CharEncoder for Simple {
             fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
                 iter.next().map(|i| format!("{}", i as u32))
+            }
+            fn wrap_in_quotes() -> bool {
+                false
             }
         }
 
