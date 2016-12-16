@@ -22,7 +22,7 @@ js   = "\u00A7"
 
 - [x] Check code coverage is working properly
 - [x] Prefer HTML entities if one exists
-- [ ] Improve output readability (maybe with colour)
+- [x] Improve output readability (maybe with colour)
 - [ ] Try and reduce the time it takes to run `cargo install`
 - [x] Test against *stable*, *beta* and *nightly* Rust
 - [x] Read spec to figure out how graphemes > FFFF are supposed to work
