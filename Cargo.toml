@@ -1,6 +1,6 @@
 [package]
 name = "how-do-i-escape"
-version = "0.2.0"
+version = "0.3.0"
 license = "MIT"
 description = "Prints escape sequences for unicode graphemes"
 authors = ["Philip Jackson <p-jackson@live.com>"]
