@@ -57,11 +57,11 @@ fn main() {
 
     let grapheme = args.arg_grapheme;
 
-    println!("");
+    println!();
     println!("{}", language_output(&grapheme, css::Css));
-    println!("");
+    println!();
     println!("{}", language_output(&grapheme, html::Html));
-    println!("");
+    println!();
     println!("{}", language_output(&grapheme, js::Js));
 }
 
