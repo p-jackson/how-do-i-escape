@@ -1,15 +1,11 @@
+extern crate clap;
 extern crate ansi_term;
-extern crate docopt;
-extern crate rustc_serialize;
 extern crate entities;
 
 
 mod css;
 mod html;
 mod js;
-
-
-use docopt::Docopt;
 
 
 trait CharEncoder: 'static {
@@ -23,39 +19,28 @@ trait Named {
 }
 
 
-const USAGE: &'static str = "
-how-do-i-escape: Prints escape sequences for unicode graphemes
+const EXAMPLE: &'static str = "EXAMPLE:
+    $ how-do-i-escape \u{00A7}
 
-Usage:
-  how-do-i-escape <grapheme>
-  how-do-i-escape (--help | --version)
+      \"\\00A7\"    -- css
 
-Options:
-  -h, --help  Show this screen.
-  --version   Show version.
+      &sect;     -- html
 
-Example:
-  $ how-do-i-escape \u{00A7}
-  css  = \"\\00A7\"
-  html = &sect;
-  js   = \"\\u00A7\"
+      \"\\u00A7\"   -- javascript
 ";
 
 
-#[derive(RustcDecodable)]
-struct Args {
-    arg_grapheme: String,
-}
-
-
 fn main() {
-    let version = format!("v{}", env!("CARGO_PKG_VERSION"));
+    use clap::{App, Arg};
 
-    let args: Args = Docopt::new(USAGE)
-        .and_then(|d| d.help(true).version(Some(version)).decode())
-        .unwrap_or_else(|e| e.exit());
+    let matches = App::new("how-do-i-escape")
+        .version(env!("CARGO_PKG_VERSION"))
+        .about("Prints escape sequences for unicode graphemes")
+        .arg(Arg::with_name("grapheme").required(true))
+        .after_help(EXAMPLE)
+        .get_matches();
 
-    let grapheme = args.arg_grapheme;
+    let grapheme = matches.value_of("grapheme").unwrap();
 
     println!("");
     println!("{}", language_output(&grapheme, css::Css));
