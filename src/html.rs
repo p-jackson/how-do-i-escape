@@ -1,9 +1,7 @@
+use entities::{Codepoints, ENTITIES};
 use std::char;
-use entities::{ENTITIES, Codepoints};
-
 
 pub struct Html;
-
 
 impl super::CharEncoder for Html {
     fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
@@ -12,12 +10,15 @@ impl super::CharEncoder for Html {
 
             // Some characters have multiple entity options
             // e.g. &quot; and &QUOT;
-            let entity_options = ENTITIES.iter()
-                .filter_map(|e| {
-                    match e.codepoints {
-                        Codepoints::Single(cp) => if cp == i { Some(e.entity) } else { None },
-                        _ => None,
-                    }
+            let entity_options = ENTITIES
+                .iter()
+                .filter_map(|e| match e.codepoints {
+                    Codepoints::Single(cp) => if cp == i {
+                        Some(e.entity)
+                    } else {
+                        None
+                    },
+                    _ => None,
                 })
                 .collect::<Vec<_>>();
 
@@ -34,26 +35,26 @@ impl super::CharEncoder for Html {
     }
 }
 
-
 impl super::Named for Html {
     fn name() -> &'static str {
         "html"
     }
 }
 
-
 // "nice" means prefer lowercase and ends with a semicolon
 fn choose_nice_entity(options: Vec<&str>) -> &str {
     assert!(!options.is_empty());
 
-    let nicest_entity = options.iter()
+    let nicest_entity = options
+        .iter()
         .find(|entity| ends_with_semicolon(entity) && is_all_lowercase(entity));
 
     if let Some(entity) = nicest_entity {
         return entity;
     }
 
-    let less_nice_entity = options.iter()
+    let less_nice_entity = options
+        .iter()
         .find(|entity| ends_with_semicolon(entity) && !is_all_caps(entity));
 
     if let Some(entity) = less_nice_entity {
@@ -81,34 +82,28 @@ fn choose_nice_entity(options: Vec<&str>) -> &str {
     options[0]
 }
 
-
 fn ends_with_semicolon(entity: &str) -> bool {
     entity.ends_with(";")
 }
-
 
 fn is_all_caps(entity: &str) -> bool {
     !entity.chars().any(char::is_lowercase)
 }
 
-
 fn is_all_lowercase(entity: &str) -> bool {
     !entity.chars().any(char::is_uppercase)
 }
 
-
 #[cfg(test)]
 mod tests {
-    use super::{Html, ends_with_semicolon, choose_nice_entity, is_all_caps, is_all_lowercase};
     use super::super::{CharEncoder, Named};
+    use super::{choose_nice_entity, ends_with_semicolon, is_all_caps, is_all_lowercase, Html};
     use std::iter::{empty, once};
-
 
     #[test]
     fn empty_iterator() {
         assert_eq!(Html::encode(&mut empty()), None);
     }
-
 
     #[test]
     fn test_as_html() {
@@ -138,7 +133,6 @@ mod tests {
         assert_eq!(Html::encode(&mut "\u{1D506}".chars()), expected7);
     }
 
-
     #[test]
     fn loop_without_crashing() {
         let v = vec!['a', 'b', 'c'];
@@ -147,33 +141,33 @@ mod tests {
         while let Some(_) = Html::encode(&mut iter) {}
     }
 
-
     #[test]
     fn no_quotes() {
         assert!(!Html::wrap_in_quotes());
     }
-
 
     #[test]
     fn name() {
         assert_eq!(Html::name(), "html");
     }
 
-
     #[test]
     fn test_choose_nice_entity() {
         let e = ["&BAD", "&Bad", "&bad", "&BAD;", "&Bad;", "&bad;"];
 
-        assert_eq!(choose_nice_entity(vec![e[0], e[1], e[2], e[3], e[4], e[5]]),
-                   "&bad;");
-        assert_eq!(choose_nice_entity(vec![e[0], e[1], e[2], e[3], e[4]]),
-                   "&Bad;");
+        assert_eq!(
+            choose_nice_entity(vec![e[0], e[1], e[2], e[3], e[4], e[5]]),
+            "&bad;"
+        );
+        assert_eq!(
+            choose_nice_entity(vec![e[0], e[1], e[2], e[3], e[4]]),
+            "&Bad;"
+        );
         assert_eq!(choose_nice_entity(vec![e[0], e[1], e[2], e[3]]), "&BAD;");
         assert_eq!(choose_nice_entity(vec![e[0], e[1], e[2]]), "&bad");
         assert_eq!(choose_nice_entity(vec![e[0], e[1]]), "&Bad");
         assert_eq!(choose_nice_entity(vec![e[0]]), "&BAD");
     }
-
 
     #[test]
     fn test_ends_with_semicolon() {
@@ -183,7 +177,6 @@ mod tests {
         assert!(ends_with_semicolon("WITH SPACES;"));
         assert!(ends_with_semicolon("Double semicolon;;"));
     }
-
 
     #[test]
     fn test_is_all_caps() {

@@ -1,6 +1,5 @@
 pub struct Js;
 
-
 impl super::CharEncoder for Js {
     fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
         iter.next().map(|ch| {
@@ -19,26 +18,22 @@ impl super::CharEncoder for Js {
     }
 }
 
-
 impl super::Named for Js {
     fn name() -> &'static str {
         "javascript"
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use super::Js;
     use super::super::{CharEncoder, Named};
+    use super::Js;
     use std::iter::{empty, once};
-
 
     #[test]
     fn empty_iterator() {
         assert_eq!(Js::encode(&mut empty()), None);
     }
-
 
     #[test]
     fn values() {
@@ -56,7 +51,6 @@ mod tests {
         assert_eq!(Js::encode(&mut once('𝔄')), expected4);
     }
 
-
     #[test]
     fn loop_without_crashing() {
         let v = vec!['a', 'b', 'c'];
@@ -65,12 +59,10 @@ mod tests {
         while let Some(_) = Js::encode(&mut iter) {}
     }
 
-
     #[test]
     fn quotes() {
         assert!(Js::wrap_in_quotes());
     }
-
 
     #[test]
     fn name() {

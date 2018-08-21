@@ -1,27 +1,22 @@
 extern crate ansi_term;
 extern crate docopt;
-extern crate rustc_serialize;
 extern crate entities;
-
+extern crate rustc_serialize;
 
 mod css;
 mod html;
 mod js;
 
-
 use docopt::Docopt;
-
 
 trait CharEncoder: 'static {
     fn encode(&mut Iterator<Item = char>) -> Option<String>;
     fn wrap_in_quotes() -> bool;
 }
 
-
 trait Named {
     fn name() -> &'static str;
 }
-
 
 const USAGE: &'static str = "
 how-do-i-escape: Prints escape sequences for unicode graphemes
@@ -41,12 +36,10 @@ Example:
   js   = \"\\u00A7\"
 ";
 
-
 #[derive(RustcDecodable)]
 struct Args {
     arg_grapheme: String,
 }
-
 
 fn main() {
     let version = format!("v{}", env!("CARGO_PKG_VERSION"));
@@ -65,7 +58,6 @@ fn main() {
     println!("{}", language_output(&grapheme, js::Js));
 }
 
-
 fn language_output<T: CharEncoder + Named>(grapheme: &str, t: T) -> String {
     let grey = ansi_term::Colour::Black.bold();
     let escape = escape_grapheme(grapheme, t);
@@ -73,7 +65,6 @@ fn language_output<T: CharEncoder + Named>(grapheme: &str, t: T) -> String {
 
     format!("  {:<10} {}", escape, lang)
 }
-
 
 fn escape_grapheme<T: CharEncoder>(grapheme: &str, _: T) -> String {
     let mut result = String::new();
@@ -93,11 +84,9 @@ fn escape_grapheme<T: CharEncoder>(grapheme: &str, _: T) -> String {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use super::{CharEncoder, Named, language_output, escape_grapheme};
-
+    use super::{escape_grapheme, language_output, CharEncoder, Named};
 
     #[test]
     fn test_escape_grapheme() {
@@ -129,7 +118,6 @@ mod tests {
         let simple = escape_grapheme("a", Simple);
         assert_eq!(simple, r#""97""#);
     }
-
 
     #[test]
     fn test_output() {

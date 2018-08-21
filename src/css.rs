@@ -1,6 +1,5 @@
 pub struct Css;
 
-
 impl super::CharEncoder for Css {
     fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
         iter.next().map(|i| format!("\\{:01$X}", i as u32, 4))
@@ -11,26 +10,22 @@ impl super::CharEncoder for Css {
     }
 }
 
-
 impl super::Named for Css {
     fn name() -> &'static str {
         "css"
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use super::Css;
     use super::super::{CharEncoder, Named};
+    use super::Css;
     use std::iter::{empty, once};
-
 
     #[test]
     fn empty_iterator() {
         assert_eq!(Css::encode(&mut empty()), None);
     }
-
 
     #[test]
     fn values() {
@@ -48,7 +43,6 @@ mod tests {
         assert_eq!(Css::encode(&mut once('𝔄')), expected4);
     }
 
-
     #[test]
     fn loop_without_crashing() {
         let v = vec!['a', 'b', 'c'];
@@ -57,12 +51,10 @@ mod tests {
         while let Some(_) = Css::encode(&mut iter) {}
     }
 
-
     #[test]
     fn quotes() {
         assert!(Css::wrap_in_quotes());
     }
-
 
     #[test]
     fn name() {
