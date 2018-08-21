@@ -10,7 +10,7 @@ mod js;
 use docopt::Docopt;
 
 trait CharEncoder: 'static {
-    fn encode(&mut Iterator<Item = char>) -> Option<String>;
+    fn encode(iter: &mut Iterator<Item = char>) -> Option<String>;
     fn wrap_in_quotes() -> bool;
 }
 
