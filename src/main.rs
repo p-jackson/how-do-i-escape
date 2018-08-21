@@ -60,6 +60,7 @@ fn main() {
     println!("{}", language_output(&grapheme, html::Html));
     println!();
     println!("{}", language_output(&grapheme, js::Js));
+    println!();
 }
 
 fn language_output<T: CharEncoder + Named>(grapheme: &str, t: T) -> String {
