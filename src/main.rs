@@ -1,7 +1,8 @@
+#[macro_use]
+extern crate serde_derive;
 extern crate ansi_term;
 extern crate docopt;
 extern crate entities;
-extern crate rustc_serialize;
 
 mod css;
 mod html;
@@ -36,7 +37,7 @@ Example:
   js   = \"\\u00A7\"
 ";
 
-#[derive(RustcDecodable)]
+#[derive(Deserialize)]
 struct Args {
     arg_grapheme: String,
 }
@@ -45,7 +46,7 @@ fn main() {
     let version = format!("v{}", env!("CARGO_PKG_VERSION"));
 
     let args: Args = Docopt::new(USAGE)
-        .and_then(|d| d.help(true).version(Some(version)).decode())
+        .and_then(|d| d.help(true).version(Some(version)).deserialize())
         .unwrap_or_else(|e| e.exit());
 
     let grapheme = args.arg_grapheme;
