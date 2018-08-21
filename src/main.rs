@@ -32,9 +32,12 @@ Options:
 
 Example:
   $ how-do-i-escape \u{00A7}
-  css  = \"\\00A7\"
-  html = &sect;
-  js   = \"\\u00A7\"
+
+    \"\\00A7\"    -- css
+
+    &sect;     -- html
+
+    \"\\u00A7\"   -- javascript
 ";
 
 #[derive(Deserialize)]
