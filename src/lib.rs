@@ -1,18 +1,31 @@
 extern crate ansi_term;
 extern crate entities;
 
-pub mod lang;
+use std::io;
 
-pub trait CharEncoder: 'static {
+mod lang;
+
+trait CharEncoder: 'static {
     fn encode(iter: &mut Iterator<Item = char>) -> Option<String>;
     fn wrap_in_quotes() -> bool;
 }
 
-pub trait Named {
+trait Named {
     fn name() -> &'static str;
 }
 
-pub fn language_output<T: CharEncoder + Named>(grapheme: &str, t: T) -> String {
+pub fn write_to<W: io::Write>(writer: &mut W, grapheme: &str) -> std::io::Result<()> {
+    writeln!(writer)?;
+    writeln!(writer, "{}", language_output(grapheme, lang::css::Css))?;
+    writeln!(writer)?;
+    writeln!(writer, "{}", language_output(grapheme, lang::html::Html))?;
+    writeln!(writer)?;
+    writeln!(writer, "{}", language_output(grapheme, lang::js::Js))?;
+
+    Ok(())
+}
+
+fn language_output<T: CharEncoder + Named>(grapheme: &str, t: T) -> String {
     let grey = ansi_term::Colour::Black.bold();
     let escape = escape_grapheme(grapheme, t);
     let lang = grey.paint(format!("-- {}", T::name()));
