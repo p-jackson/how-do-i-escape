@@ -1,14 +1,10 @@
-#[macro_use]
-extern crate serde_derive;
 extern crate ansi_term;
-extern crate docopt;
+extern crate clap;
 extern crate entities;
 
 mod css;
 mod html;
 mod js;
-
-use docopt::Docopt;
 
 trait CharEncoder: 'static {
     fn encode(iter: &mut Iterator<Item = char>) -> Option<String>;
@@ -19,17 +15,17 @@ trait Named {
     fn name() -> &'static str;
 }
 
-const USAGE: &'static str = "
-how-do-i-escape: Prints escape sequences for unicode graphemes
+const HELP_TEMPLATE: &'static str = "
+{bin}: {about}
 
 Usage:
-  how-do-i-escape <grapheme>
-  how-do-i-escape (--help | --version)
+    {usage}
 
 Options:
-  -h, --help  Show this screen.
-  --version   Show version.
+{flags}
+{after-help}";
 
+const AFTER_HELP_TEMPLATE: &'static str = "
 Example:
   $ how-do-i-escape \u{00A7}
 
@@ -40,19 +36,16 @@ Example:
     \"\\u00A7\"   -- javascript
 ";
 
-#[derive(Deserialize)]
-struct Args {
-    arg_grapheme: String,
-}
-
 fn main() {
-    let version = format!("v{}", env!("CARGO_PKG_VERSION"));
+    let matches = clap::App::new("how-do-i-escape")
+        .about("Prints escape sequences for unicode graphemes")
+        .version(env!("CARGO_PKG_VERSION"))
+        .arg(clap::Arg::with_name("grapheme").required(true))
+        .template(HELP_TEMPLATE)
+        .after_help(AFTER_HELP_TEMPLATE)
+        .get_matches();
 
-    let args: Args = Docopt::new(USAGE)
-        .and_then(|d| d.help(true).version(Some(version)).deserialize())
-        .unwrap_or_else(|e| e.exit());
-
-    let grapheme = args.arg_grapheme;
+    let grapheme = matches.value_of("grapheme").unwrap();
 
     println!();
     println!("{}", language_output(&grapheme, css::Css));
