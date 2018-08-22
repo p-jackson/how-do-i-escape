@@ -25,24 +25,13 @@ Options:
 {flags}
 {after-help}";
 
-const AFTER_HELP_TEMPLATE: &'static str = "
-Example:
-  $ how-do-i-escape \u{00A7}
-
-    \"\\00A7\"    -- css
-
-    &sect;     -- html
-
-    \"\\u00A7\"   -- javascript
-";
-
 fn main() {
     let matches = clap::App::new("how-do-i-escape")
         .about("Prints escape sequences for unicode graphemes")
         .version(env!("CARGO_PKG_VERSION"))
         .arg(clap::Arg::with_name("grapheme").required(true))
         .template(HELP_TEMPLATE)
-        .after_help(AFTER_HELP_TEMPLATE)
+        .after_help(example_text().as_ref())
         .get_matches();
 
     let grapheme = matches.value_of("grapheme").unwrap();
@@ -62,6 +51,26 @@ fn language_output<T: CharEncoder + Named>(grapheme: &str, t: T) -> String {
     let lang = grey.paint(format!("-- {}", T::name()));
 
     format!("  {:<10} {}", escape, lang)
+}
+
+fn example_text() -> String {
+    let grey = ansi_term::Colour::Black.bold();
+
+    format!(
+        "
+Example:
+  $ how-do-i-escape \u{00A7}
+
+    \"\\00A7\"    {css}
+
+    &sect;     {html}
+
+    \"\\u00A7\"   {js}
+",
+        css = grey.paint("-- css"),
+        html = grey.paint("-- html"),
+        js = grey.paint("-- javascript")
+    )
 }
 
 fn escape_grapheme<T: CharEncoder>(grapheme: &str, _: T) -> String {
