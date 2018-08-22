@@ -1,6 +1,8 @@
+use {CharEncoder, Named};
+
 pub struct Css;
 
-impl super::CharEncoder for Css {
+impl CharEncoder for Css {
     fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
         iter.next().map(|i| format!("\\{:01$X}", i as u32, 4))
     }
@@ -10,7 +12,7 @@ impl super::CharEncoder for Css {
     }
 }
 
-impl super::Named for Css {
+impl Named for Css {
     fn name() -> &'static str {
         "css"
     }
@@ -18,9 +20,9 @@ impl super::Named for Css {
 
 #[cfg(test)]
 mod tests {
-    use super::super::{CharEncoder, Named};
     use super::Css;
     use std::iter::{empty, once};
+    use {CharEncoder, Named};
 
     #[test]
     fn empty_iterator() {

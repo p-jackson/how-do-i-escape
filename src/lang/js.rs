@@ -1,6 +1,8 @@
+use {CharEncoder, Named};
+
 pub struct Js;
 
-impl super::CharEncoder for Js {
+impl CharEncoder for Js {
     fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
         iter.next().map(|ch| {
             let i = ch as u32;
@@ -18,7 +20,7 @@ impl super::CharEncoder for Js {
     }
 }
 
-impl super::Named for Js {
+impl Named for Js {
     fn name() -> &'static str {
         "javascript"
     }
@@ -26,9 +28,9 @@ impl super::Named for Js {
 
 #[cfg(test)]
 mod tests {
-    use super::super::{CharEncoder, Named};
     use super::Js;
     use std::iter::{empty, once};
+    use {CharEncoder, Named};
 
     #[test]
     fn empty_iterator() {

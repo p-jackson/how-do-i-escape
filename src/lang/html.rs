@@ -1,9 +1,10 @@
 use entities::{Codepoints, ENTITIES};
 use std::char;
+use {CharEncoder, Named};
 
 pub struct Html;
 
-impl super::CharEncoder for Html {
+impl CharEncoder for Html {
     fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
         iter.next().map(|ch| {
             let i = ch as u32;
@@ -35,7 +36,7 @@ impl super::CharEncoder for Html {
     }
 }
 
-impl super::Named for Html {
+impl Named for Html {
     fn name() -> &'static str {
         "html"
     }
@@ -96,9 +97,9 @@ fn is_all_lowercase(entity: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::super::{CharEncoder, Named};
     use super::{choose_nice_entity, ends_with_semicolon, is_all_caps, is_all_lowercase, Html};
     use std::iter::{empty, once};
+    use {CharEncoder, Named};
 
     #[test]
     fn empty_iterator() {
