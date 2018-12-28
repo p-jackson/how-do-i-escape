@@ -1,9 +1,9 @@
-use {CharEncoder, Named};
+use crate::{CharEncoder, Named};
 
 pub struct Js;
 
 impl CharEncoder for Js {
-    fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
+    fn encode(iter: &mut dyn Iterator<Item = char>) -> Option<String> {
         iter.next().map(|ch| {
             let i = ch as u32;
 
@@ -29,8 +29,8 @@ impl Named for Js {
 #[cfg(test)]
 mod tests {
     use super::Js;
+    use crate::{CharEncoder, Named};
     use std::iter::{empty, once};
-    use {CharEncoder, Named};
 
     #[test]
     fn empty_iterator() {

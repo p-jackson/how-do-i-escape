@@ -1,6 +1,5 @@
-extern crate ansi_term;
-extern crate clap;
-extern crate how_do_i_escape;
+use ansi_term;
+use clap;
 
 use how_do_i_escape::write_to;
 use std::{io, str};

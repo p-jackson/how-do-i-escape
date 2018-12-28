@@ -1,11 +1,11 @@
+use crate::{CharEncoder, Named};
 use entities::{Codepoints, ENTITIES};
 use std::char;
-use {CharEncoder, Named};
 
 pub struct Html;
 
 impl CharEncoder for Html {
-    fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
+    fn encode(iter: &mut dyn Iterator<Item = char>) -> Option<String> {
         iter.next().map(|ch| {
             let i = ch as u32;
 
@@ -14,11 +14,13 @@ impl CharEncoder for Html {
             let entity_options = ENTITIES
                 .iter()
                 .filter_map(|e| match e.codepoints {
-                    Codepoints::Single(cp) => if cp == i {
-                        Some(e.entity)
-                    } else {
-                        None
-                    },
+                    Codepoints::Single(cp) => {
+                        if cp == i {
+                            Some(e.entity)
+                        } else {
+                            None
+                        }
+                    }
                     _ => None,
                 })
                 .collect::<Vec<_>>();
@@ -98,8 +100,8 @@ fn is_all_lowercase(entity: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::{choose_nice_entity, ends_with_semicolon, is_all_caps, is_all_lowercase, Html};
+    use crate::{CharEncoder, Named};
     use std::iter::{empty, once};
-    use {CharEncoder, Named};
 
     #[test]
     fn empty_iterator() {

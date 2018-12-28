@@ -8,6 +8,7 @@ homepage = "https://github.com/p-jackson/how-do-i-escape"
 repository = "https://github.com/p-jackson/how-do-i-escape"
 readme = "README.md"
 keywords = ["escape", "escaping", "unicode", "grapheme", "character"]
+edition = "2018"
 
 [dependencies]
 ansi_term = "0.11.0"

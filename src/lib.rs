@@ -1,12 +1,11 @@
-extern crate ansi_term;
-extern crate entities;
+use ansi_term;
 
 use std::io;
 
 mod lang;
 
 trait CharEncoder: 'static {
-    fn encode(iter: &mut Iterator<Item = char>) -> Option<String>;
+    fn encode(iter: &mut dyn Iterator<Item = char>) -> Option<String>;
     fn wrap_in_quotes() -> bool;
 }
 
@@ -60,7 +59,7 @@ mod tests {
         struct AlwaysHello;
 
         impl CharEncoder for AlwaysHello {
-            fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
+            fn encode(iter: &mut dyn Iterator<Item = char>) -> Option<String> {
                 iter.next().map(|_| "hello".to_string())
             }
             fn wrap_in_quotes() -> bool {
@@ -74,7 +73,7 @@ mod tests {
         struct Simple;
 
         impl CharEncoder for Simple {
-            fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
+            fn encode(iter: &mut dyn Iterator<Item = char>) -> Option<String> {
                 iter.next().map(|i| format!("{}", i as u32))
             }
             fn wrap_in_quotes() -> bool {
@@ -91,7 +90,7 @@ mod tests {
         struct AlwaysHello;
 
         impl CharEncoder for AlwaysHello {
-            fn encode(iter: &mut Iterator<Item = char>) -> Option<String> {
+            fn encode(iter: &mut dyn Iterator<Item = char>) -> Option<String> {
                 iter.next().map(|_| "hello".to_string())
             }
             fn wrap_in_quotes() -> bool {
