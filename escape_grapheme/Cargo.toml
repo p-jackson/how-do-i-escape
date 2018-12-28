@@ -1,0 +1,12 @@
+[package]
+name = "escape_grapheme"
+version = "0.3.0"
+license = "MIT"
+description = "Library that can escape graphemes in various languages"
+authors = ["Philip Jackson <p-jackson@live.com>"]
+homepage = "https://github.com/p-jackson/how-do-i-escape"
+repository = "https://github.com/p-jackson/how-do-i-escape"
+edition = "2018"
+
+[dependencies]
+entities = "1.0.0"

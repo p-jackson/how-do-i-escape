@@ -1,7 +1,8 @@
 use ansi_term;
 use clap;
 
-use how_do_i_escape::write_to;
+mod output;
+
 use std::{io, str};
 
 const HELP_TEMPLATE: &'static str = "
@@ -30,7 +31,7 @@ fn run() -> io::Result<()> {
     // We marked the grapheme argument as required above, so unwrap
     let grapheme = matches.value_of("grapheme").unwrap();
 
-    write_to(&mut io::stdout(), &grapheme)?;
+    output::write_to(&mut io::stdout(), &grapheme)?;
     println!();
 
     Ok(())
@@ -40,7 +41,7 @@ fn example_text() -> io::Result<String> {
     let white = ansi_term::Colour::White.bold();
 
     let mut buffer = Vec::new();
-    write_to(&mut buffer, "\u{00A7}").unwrap();
+    output::write_to(&mut buffer, "\u{00A7}").unwrap();
 
     let example_output =
         str::from_utf8(&buffer).map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;

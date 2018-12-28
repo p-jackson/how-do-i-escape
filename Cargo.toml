@@ -1,16 +1,6 @@
-[package]
-name = "how-do-i-escape"
-version = "0.3.0"
-license = "MIT"
-description = "Prints escape sequences for unicode graphemes"
-authors = ["Philip Jackson <p-jackson@live.com>"]
-homepage = "https://github.com/p-jackson/how-do-i-escape"
-repository = "https://github.com/p-jackson/how-do-i-escape"
-readme = "README.md"
-keywords = ["escape", "escaping", "unicode", "grapheme", "character"]
-edition = "2018"
+[workspace]
 
-[dependencies]
-ansi_term = "0.11.0"
-entities = "1.0.0"
-clap = "2.32.0"
+members = [
+  "how_do_i_escape_cli",
+  "escape_grapheme",
+]

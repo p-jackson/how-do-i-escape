@@ -41,12 +41,19 @@ version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "how-do-i-escape"
+name = "escape_grapheme"
+version = "0.3.0"
+dependencies = [
+ "entities 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "how_do_i_escape_cli"
 version = "0.3.0"
 dependencies = [
  "ansi_term 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "entities 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "escape_grapheme 0.3.0",
 ]
 
 [[package]]
