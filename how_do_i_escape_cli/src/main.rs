@@ -5,7 +5,7 @@ mod output;
 
 use std::{io, str};
 
-const HELP_TEMPLATE: &'static str = "
+const HELP_TEMPLATE: &str = "
 {bin}: {about}
 
 USAGE:

@@ -28,7 +28,7 @@ impl CharEncoder for Html {
             if entity_options.is_empty() {
                 format!("&#x{:01$X};", i, 4)
             } else {
-                choose_nice_entity(entity_options).to_string()
+                choose_nice_entity(&entity_options).to_string()
             }
         })
     }
@@ -45,7 +45,7 @@ impl Named for Html {
 }
 
 // "nice" means prefer lowercase and ends with a semicolon
-fn choose_nice_entity(options: Vec<&str>) -> &str {
+fn choose_nice_entity<'a>(options: &[&'a str]) -> &'a str {
     assert!(!options.is_empty());
 
     let nicest_entity = options
@@ -86,7 +86,7 @@ fn choose_nice_entity(options: Vec<&str>) -> &str {
 }
 
 fn ends_with_semicolon(entity: &str) -> bool {
-    entity.ends_with(";")
+    entity.ends_with(';')
 }
 
 fn is_all_caps(entity: &str) -> bool {
@@ -159,17 +159,17 @@ mod tests {
         let e = ["&BAD", "&Bad", "&bad", "&BAD;", "&Bad;", "&bad;"];
 
         assert_eq!(
-            choose_nice_entity(vec![e[0], e[1], e[2], e[3], e[4], e[5]]),
+            choose_nice_entity(&vec![e[0], e[1], e[2], e[3], e[4], e[5]]),
             "&bad;"
         );
         assert_eq!(
-            choose_nice_entity(vec![e[0], e[1], e[2], e[3], e[4]]),
+            choose_nice_entity(&vec![e[0], e[1], e[2], e[3], e[4]]),
             "&Bad;"
         );
-        assert_eq!(choose_nice_entity(vec![e[0], e[1], e[2], e[3]]), "&BAD;");
-        assert_eq!(choose_nice_entity(vec![e[0], e[1], e[2]]), "&bad");
-        assert_eq!(choose_nice_entity(vec![e[0], e[1]]), "&Bad");
-        assert_eq!(choose_nice_entity(vec![e[0]]), "&BAD");
+        assert_eq!(choose_nice_entity(&vec![e[0], e[1], e[2], e[3]]), "&BAD;");
+        assert_eq!(choose_nice_entity(&vec![e[0], e[1], e[2]]), "&bad");
+        assert_eq!(choose_nice_entity(&vec![e[0], e[1]]), "&Bad");
+        assert_eq!(choose_nice_entity(&vec![e[0]]), "&BAD");
     }
 
     #[test]

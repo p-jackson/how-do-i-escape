@@ -13,11 +13,8 @@ pub fn escape_grapheme<T: CharEncoder>(grapheme: &str, _: T) -> String {
     let mut result = String::new();
     let mut iter = grapheme.chars();
 
-    loop {
-        match T::encode(&mut iter) {
-            Some(s) => result.push_str(&s),
-            None => break,
-        }
+    while let Some(s) = T::encode(&mut iter) {
+        result.push_str(&s);
     }
 
     if T::wrap_in_quotes() {
