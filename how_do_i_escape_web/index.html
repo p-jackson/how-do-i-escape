@@ -10,16 +10,33 @@
     />
   </head>
   <body>
-    <h1>how-do-i-escape</h1>
-    <form>
-      <label for="grapheme-input">Grapheme to escape</label
-      ><input id="grapheme-input" />
-    </form>
-    <div>CSS:</div>
-    <pre id="css-output"></pre>
-    <div>HTML:</div>
-    <pre id="html-output"></pre>
-    <div>JavaScript:</div>
-    <pre id="js-output"></pre>
+    <header class="l-header"><h1>how do i escape</h1></header>
+    <main>
+      <p class="appDescription">
+        It seems like every other day I'm searching for the escape sequence for
+        some character. Technically what I'm wanting to escape is a
+        <a href="https://en.wikipedia.org/wiki/Grapheme">grapheme</a>, which
+        could be multiple &ldquo;characters&rdquo;. This tool deals with the
+        complexities and tells how to escape the thing.
+      </p>
+      <form class="graphemeForm">
+        <label for="grapheme-input">Grapheme to escape:</label>
+        <input id="grapheme-input" />
+      </form>
+      <div id="escapedOutputContainer" style="display: none">
+        <div class="escapedOutput">
+          <div class="escapedOutput-label">CSS:</div>
+          <pre id="css-output"></pre>
+        </div>
+        <div class="escapedOutput">
+          <div class="escapedOutput-label">HTML:</div>
+          <pre id="html-output"></pre>
+        </div>
+        <div class="escapedOutput">
+          <div class="escapedOutput-label">JavaScript:</div>
+          <pre id="js-output"></pre>
+        </div>
+      </div>
+    </main>
   </body>
 </html>

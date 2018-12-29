@@ -1,0 +1,84 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+  line-height: 1.5;
+  font-size: 18px;
+  background: #9b59b6;
+  color: #fff;
+}
+
+.l-header {
+  background: #8e44ad;
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.l-header h1 {
+  font-size: 2rem;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
+.appDescription {
+  background: #ecf0f1;
+  color: #8e44ad;
+  display: block;
+  border-radius: 4px;
+  padding: 0.8rem 1.1rem;
+  max-width: 600px;
+  box-shadow: inset 0 0 7px -2px #33183e;
+}
+
+.appDescription a {
+  color: #8e44ad;
+}
+
+.graphemeForm {
+  padding: 1rem;
+  max-width: 300px;
+  text-align: center;
+}
+
+.graphemeForm input {
+  font-size: 2rem;
+  font-family: monospace, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+  background: transparent;
+  border: none;
+  color: #fff;
+  text-align: center;
+  border-bottom: 2px solid #ffffff;
+  display: block;
+  width: 100%;
+}
+
+#escapedOutputContainer {
+  max-width: 300px;
+  width: 100%;
+}
+
+.escapedOutput {
+  padding: 1rem 1rem 0 1rem;
+}
+
+.escapedOutput pre {
+  background: #2c3e50;
+  color: #ecf0f1;
+  width: 100%;
+  display: block;
+  border-radius: 4px;
+  padding: 0.4rem 0.7rem;
+  box-shadow: inset 0 0 10px -2px #1b2631;
+}
