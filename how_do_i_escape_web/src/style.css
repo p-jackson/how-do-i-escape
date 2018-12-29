@@ -6,6 +6,7 @@
   box-sizing: border-box;
 }
 
+html,
 body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
     sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
@@ -15,52 +16,45 @@ body {
   color: #fff;
 }
 
-a:focus,
-input:focus {
-  outline: currentColor dashed 2px;
+.link {
+  color: currentColor;
 }
 
-a:focus {
+.link:focus {
+  outline: currentColor dashed 2px;
   outline-offset: 1px;
 }
 
-input:focus {
-  outline-offset: 2px;
-}
-
-.l-header {
+.header {
   background: #8e44ad;
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   text-align: center;
 }
 
-.l-header h1 {
+.header-bigText {
   font-size: 2rem;
+  font-weight: 500;
 }
 
-main {
+.mainContent {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem 1rem 2.5rem 1rem;
+  padding: 16px 16px 40px 16px;
 }
 
-.appDescription {
+.mainContent-description {
   background: #ecf0f1;
   color: #8e44ad;
   display: block;
   border-radius: 4px;
-  padding: 0.8rem 1.1rem;
+  padding: 12px 17px;
   max-width: 600px;
   box-shadow: inset 0 0 7px -2px #33183e;
 }
 
-.appDescription a {
-  color: #8e44ad;
-}
-
 .graphemeForm {
-  padding: 1rem;
+  padding: 16px;
   max-width: 300px;
   text-align: center;
 }
@@ -77,13 +71,18 @@ main {
   width: 100%;
 }
 
-#escapedOutputContainer {
+.graphemeForm input:focus {
+  outline: currentColor dashed 2px;
+  outline-offset: 2px;
+}
+
+.escapedOutputContainer {
   max-width: 300px;
   width: 100%;
 }
 
 .escapedOutput {
-  padding: 1rem 1rem 0 1rem;
+  padding: 16px 16px 0 16px;
 }
 
 .escapedOutput-label {
@@ -91,28 +90,20 @@ main {
   font-size: 0.85rem;
 }
 
-.escapedOutput pre {
+.escapedOutput-output {
   background: #2c3e50;
   color: #ecf0f1;
   width: 100%;
   display: block;
   border-radius: 4px;
-  padding: 0.4rem 0.7rem;
+  padding: 6px 11px;
   box-shadow: inset 0 0 10px -2px #1b2631;
 }
 
-hr {
-  border: 1px solid #8e44ad;
+.footer {
+  border-top: 2px solid #8e44ad;
   max-width: 600px;
   margin: 0 auto;
-}
-
-footer {
   text-align: center;
-  font-size: 1rem;
-  padding: 1rem;
-}
-
-footer a {
-  color: currentColor;
+  padding: 16px;
 }

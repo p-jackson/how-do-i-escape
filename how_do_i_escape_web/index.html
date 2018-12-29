@@ -10,38 +10,46 @@
     />
   </head>
   <body>
-    <header class="l-header"><h1>how do i escape</h1></header>
-    <main>
-      <p class="appDescription">
+    <header class="header">
+      <h1 class="header-bigText">how do i escape</h1>
+    </header>
+    <main class="mainContent">
+      <p class="mainContent-description">
         It seems like every other day I'm searching for the escape sequence for
         some character. Technically what I'm wanting to escape is a
-        <a href="https://en.wikipedia.org/wiki/Grapheme">grapheme</a>, which
-        could be multiple &ldquo;characters&rdquo;. This tool deals with the
-        complexities and just tells you how to escape the thing.
+        <a class="link" href="https://en.wikipedia.org/wiki/Grapheme"
+          >grapheme</a
+        >, which could be multiple &ldquo;characters&rdquo;. This tool deals
+        with the complexities and just tells you how to escape the thing.
       </p>
       <form class="graphemeForm">
         <label for="grapheme-input">Grapheme to escape:</label>
         <input id="grapheme-input" />
       </form>
-      <div id="escapedOutputContainer" style="display: none">
+      <div
+        id="escapedOutputContainer"
+        class="escapedOutputContainer"
+        style="display: none"
+      >
         <div class="escapedOutput">
           <div class="escapedOutput-label">CSS:</div>
-          <pre id="css-output"></pre>
+          <pre class="escapedOutput-output" id="css-output"></pre>
         </div>
         <div class="escapedOutput">
           <div class="escapedOutput-label">HTML:</div>
-          <pre id="html-output"></pre>
+          <pre class="escapedOutput-output" id="html-output"></pre>
         </div>
         <div class="escapedOutput">
           <div class="escapedOutput-label">JavaScript:</div>
-          <pre id="js-output"></pre>
+          <pre class="escapedOutput-output" id="js-output"></pre>
         </div>
       </div>
     </main>
-    <hr />
-    <footer>
-      Created by <a href="https://github.com/p-jackson">Philip Jackson</a> |
+    <footer class="footer">
+      Created by
+      <a class="link" href="https://github.com/p-jackson">Philip Jackson</a> |
       <a
+        class="link"
         href="https://github.com/p-jackson/how-do-i-escape/tree/master/how_do_i_escape_web"
         >View Source</a
       >
