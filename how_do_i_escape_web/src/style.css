@@ -15,6 +15,19 @@ body {
   color: #fff;
 }
 
+a:focus,
+input:focus {
+  outline: currentColor dashed 2px;
+}
+
+a:focus {
+  outline-offset: 1px;
+}
+
+input:focus {
+  outline-offset: 2px;
+}
+
 .l-header {
   background: #8e44ad;
   padding: 0.5rem 1rem;
@@ -71,6 +84,11 @@ main {
 
 .escapedOutput {
   padding: 1rem 1rem 0 1rem;
+}
+
+.escapedOutput-label {
+  font-weight: 600;
+  font-size: 0.85rem;
 }
 
 .escapedOutput pre {
