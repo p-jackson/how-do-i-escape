@@ -3,4 +3,5 @@
 members = [
   "how_do_i_escape_cli",
   "escape_grapheme",
+  "how_do_i_escape_web/crate"
 ]
