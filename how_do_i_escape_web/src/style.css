@@ -6,6 +6,12 @@
   box-sizing: border-box;
 }
 
+/* Remove this Firefox specific focus ring since */
+/* we're dealing with focus visibility ourselves */
+button::-moz-focus-inner {
+  border: 0;
+}
+
 html,
 body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
