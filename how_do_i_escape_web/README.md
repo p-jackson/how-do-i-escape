@@ -2,6 +2,8 @@
 
 Web app version of how-do-i-escape CLI tool.
 
+https://how-do-i-escape.surge.sh
+
 > Project depends on `wasm-pack`. The latest release doesn't support Cargo
 > workspaces, but the feature has been committed to `master` so you will need
 > to build it from source and make it available on your `PATH`:
