@@ -26,22 +26,24 @@
         <label for="grapheme-input">Grapheme to escape:</label>
         <input id="grapheme-input" />
       </form>
-      <div
-        id="escapedOutputContainer"
-        class="escapedOutputContainer"
-        style="display: none"
-      >
+      <div class="hints">
+        (hint: try one of these &rarr; <button class="hints-button">&sect;</button>
+        <button class="hints-button">&ldquo;&rdquo;</button>
+        <button class="hints-button">&#x1F525;</button>
+        <button class="hints-button">&#x1F477;&zwj;&female;&#xFE0F;</button>)
+      </div>
+      <div id="escapedOutputContainer" class="escapedOutputContainer">
         <div class="escapedOutput">
           <div class="escapedOutput-label">CSS:</div>
-          <pre class="escapedOutput-output" id="css-output"></pre>
+          <pre class="escapedOutput-output" id="css-output">&#8203;</pre>
         </div>
         <div class="escapedOutput">
           <div class="escapedOutput-label">HTML:</div>
-          <pre class="escapedOutput-output" id="html-output"></pre>
+          <pre class="escapedOutput-output" id="html-output">&#8203;</pre>
         </div>
         <div class="escapedOutput">
           <div class="escapedOutput-label">JavaScript:</div>
-          <pre class="escapedOutput-output" id="js-output"></pre>
+          <pre class="escapedOutput-output" id="js-output">&#8203;</pre>
         </div>
       </div>
     </main>

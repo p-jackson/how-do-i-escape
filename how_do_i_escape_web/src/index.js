@@ -22,20 +22,22 @@ if (!htmlOutput) throw new Error("expected html output element");
 const jsOutput = document.getElementById("js-output");
 if (!jsOutput) throw new Error("expected js output element");
 
+const hintButtons = Array.from(document.querySelectorAll(".hints-button"));
+
 import("../crate/pkg").then(crate => {
   crate.init();
 
   const updateOutputs = () => {
-    if (!input.value) {
-      escapedOutputs.style.display = "none";
-      return;
+    if (input.value) {
+      cssOutput.textContent = crate.escape_css(input.value);
+      htmlOutput.textContent = crate.escape_html(input.value);
+      jsOutput.textContent = crate.escape_js(input.value);
+    } else {
+      // Insert zero-width spaces so nothing appears in box
+      cssOutput.textContent = "\u200b";
+      htmlOutput.textContent = "\u200b";
+      jsOutput.textContent = "\u200b";
     }
-
-    cssOutput.textContent = crate.escape_css(input.value);
-    htmlOutput.textContent = crate.escape_html(input.value);
-    jsOutput.textContent = crate.escape_js(input.value);
-
-    escapedOutputs.style.display = "block";
   };
 
   input.addEventListener("input", updateOutputs);
@@ -43,6 +45,13 @@ import("../crate/pkg").then(crate => {
   form.addEventListener("submit", e => {
     e.preventDefault();
     updateOutputs();
+  });
+
+  hintButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      input.value = button.textContent;
+      updateOutputs();
+    });
   });
 
   updateOutputs();
