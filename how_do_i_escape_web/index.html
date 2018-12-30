@@ -8,6 +8,11 @@
       name="Description"
       content="Prints escape sequences for unicode graphemes."
     />
+    <% htmlWebpackPlugin.files.css.forEach(cssFile => { %>
+    <style>
+      <% print(compilation.assets[cssFile.substr(htmlWebpackPlugin.files.publicPath.length)].source()) %>
+    </style>
+    <% }); %>
   </head>
   <body>
     <header class="header">
@@ -56,5 +61,10 @@
         >View Source</a
       >
     </footer>
+    <% htmlWebpackPlugin.files.js.forEach(jsFile => { %>
+    <script type="text/javascript">
+      <% print(compilation.assets[jsFile.substr(htmlWebpackPlugin.files.publicPath.length)].source()) %>
+    </script>
+    <% }); %>
   </body>
 </html>
