@@ -31,6 +31,7 @@ module.exports = (env, options) => ({
 
     new HtmlWebpackPlugin({
       template: "index.html",
+      favicon: "./src/favicon.ico",
       inject: false,
       minify:
         options.mode !== "production"
